@@ -9,10 +9,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegisterController extends AbstractController
 {
-    // C'est grace au "manager" de Doctrine qu'on peut faire nos manipulation avec la bd
+    // Step 4a
+    // Doctrine (ORM Symfony), et à travers son "manager" (ou Entity Manager), permet la manipulations des data de la bd
     private $entityManager;
 
     // l'Entity manager est défini quand le Controller est appelé
@@ -24,14 +26,15 @@ class RegisterController extends AbstractController
     /**
      * @Route("/register", name="register")
      */
+    // Step 1a
     // injection de dépendance => HttpFoundation\Request
-    public function index(Request $request): Response
+    public function index(Request $request, UserPasswordEncoderInterface $encoder): Response
     {
         $user = new User();
         $form = $this->createForm(RegisterType::class, $user);
 
-        // Step 1
-        // Permet d'écouter la requête entrante (objet Request de Symfony) pour voir s'il n'y a pas un Post
+        // Step 1b
+        // Ecouter la requête entrante (objet Request de Symfony) pour voir s'il n'y a pas un Post
         $form->handleRequest($request);
 
         // Step 2
@@ -42,15 +45,15 @@ class RegisterController extends AbstractController
             // Recupère les data du form et mettre ça dans la variable $user
             $user = $form->getData();
 
-            // // Doctrine (ORM Symfony) permet l'interaction avec la bd
-            // $doctrine = $this->getDoctrine()->getManager();
+            // Encodage du mot de passe
+            $password = $encoder->encodePassword($user, $user->getPassword());
 
-            // Step 4
+            $user->setPassword($password);
+
+            // Step 4b
             // // Fige la data pour pouvoir l'enregistrer
-            // $doctrine->persist($user);
             $this->entityManager->persist($user);
             // // Execute la persistance / Enregistre la data dans la bd
-            // $doctrine->flush();
             $this->entityManager->flush();
         }
 
