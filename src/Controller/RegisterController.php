@@ -24,7 +24,7 @@ class RegisterController extends AbstractController
     }
 
     /**
-     * @Route("/register", name="register")
+     * @Route("/inscription", name="inscription")
      */
     // Step 1a
     // injection de dépendance => HttpFoundation\Request
