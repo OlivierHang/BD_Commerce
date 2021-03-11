@@ -30,32 +30,36 @@
 			}
 		</style>
 		<!-- Custom styles for this template -->
-		<link href="{{ asset('assets/css/carousel.css') }}" rel="stylesheet">
+		<link
+		href="{{ asset('assets/css/carousel.css') }}" rel="stylesheet">
+		{# Custom CSS #}
+		<link rel="stylesheet" href="{{ asset('assets/css/bdCommerce.css') }}">
 	</head>
 	<body>
 		<header>
 			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-				<a class="navbar-brand" href="#">BD Commerce</a>
+				<a class="navbar-brand" href="{{ path('home') }}">BD Commerce</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="collapse navbar-collapse" id="navbarCollapse">
 					<ul class="navbar-nav mr-auto">
 						<li class="nav-item active">
-							<a class="nav-link" href="#">Home
-								<span class="sr-only">(current)</span>
+							<a class="nav-link" href="#">Nos BD
 							</a>
 						</li>
 					</ul>
-					{% if app.user %}
-						<a href="{{ path('compte') }}">Compte</a>
-						|
-						<a href="{{ path('app_logout') }}">Deconnexion</a>
-					{% else %}
-						<a href="{{ path('inscription') }}">Inscription</a>
-						|
-						<a href="{{ path('app_login') }}">Connexion</a>
-					{% endif %}
+					<div class="navbar-item-custom">
+						{% if app.user %}
+							<a href="{{ path('compte') }}">{{ app.user.email }}</a>
+							|
+							<a href="{{ path('app_logout') }}">Deconnexion</a>
+						{% else %}
+							<a href="{{ path('inscription') }}">Inscription</a>
+							|
+							<a href="{{ path('app_login') }}">Connexion</a>
+						{% endif %}
+					</div>
 				</div>
 			</nav>
 		</header>
@@ -120,20 +124,19 @@
 
 
 			<!-- Marketing messaging and featurettes
-																																																																																	    ================================================== -->
+																																																																																																																																							    ================================================== -->
 			<!-- Wrap the rest of the page in another container to center all the content. -->
 
 			<div class="container marketing  {% if block('carousel') is not defined %}mt-5{% endif %}"> {% block content %}{% endblock %}
-
 				</div>
 				<!-- /.container -->
 
 				<!-- FOOTER -->
-				<footer class="container">
+				<footer class="footer-custom">
 					<p class="float-right">
 						<a href="#">Back to top</a>
 					</p>
-					<p>&copy; 2017-2020 Company, Inc. &middot;
+					<p>&copy; 2021 BD Commerce &middot;
 						<a href="#">Privacy</a>
 						&middot;
 						<a href="#">Terms</a>
