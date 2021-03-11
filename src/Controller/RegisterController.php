@@ -33,6 +33,11 @@ class RegisterController extends AbstractController
         $user = new User();
         $form = $this->createForm(RegisterType::class, $user);
 
+        // Si user est déjà connecté, redirigé vers la page "compte"
+        if ($this->getUser()) {
+            return $this->redirectToRoute('compte');
+        }
+
         // Step 1b
         // Ecouter la requête entrante (objet Request de Symfony) pour voir s'il n'y a pas un Post
         $form->handleRequest($request);
