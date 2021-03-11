@@ -45,10 +45,15 @@
 							</a>
 						</li>
 					</ul>
-					<form class="form-inline mt-2 mt-md-0">
-						<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-						<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-					</form>
+					{% if app.user %}
+						<a href="{{ path('compte') }}">Compte</a>
+						|
+						<a href="{{ path('app_logout') }}">Deconnexion</a>
+					{% else %}
+						<a href="{{ path('inscription') }}">Inscription</a>
+						|
+						<a href="{{ path('app_login') }}">Connexion</a>
+					{% endif %}
 				</div>
 			</nav>
 		</header>
@@ -113,7 +118,7 @@
 
 
 			<!-- Marketing messaging and featurettes
-																																													    ================================================== -->
+																																																																								    ================================================== -->
 			<!-- Wrap the rest of the page in another container to center all the content. -->
 
 			<div class="container marketing  {% if block('carousel') is not defined %}mt-5{% endif %}"> {% block content %}{% endblock %}
