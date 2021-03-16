@@ -25,6 +25,11 @@ class Bd
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    private $image;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
     private $auteur;
 
     /**
@@ -76,6 +81,7 @@ class Bd
      * @ORM\Column(type="string", length=5000, nullable=true)
      */
     private $resume;
+
 
     public function getId(): ?int
     {
@@ -222,6 +228,18 @@ class Bd
     public function setResume(?string $resume): self
     {
         $this->resume = $resume;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

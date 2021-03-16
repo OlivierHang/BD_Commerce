@@ -9,7 +9,8 @@
 		<pre>
         {{ dump(bd) }}
     </pre>
-		<img src="{{ asset('couv/') }}{{ bd.ref }}.jpg">
+		{# <img src="{{ asset('couv/') }}{{ bd.ref }}"> #}
+		<img src="{{ asset('couv/') }}{{ bd.image }}">
 	{% endfor %}
 
 {% endblock %}
