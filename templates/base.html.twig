@@ -36,6 +36,7 @@
 		<link rel="stylesheet" href="{{ asset('assets/css/bdCommerce.css') }}">
 	</head>
 	<body>
+		{# NAVBAR #}
 		<header>
 			<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
 				<a class="navbar-brand" href="{{ path('home') }}">BD Commerce</a>
@@ -63,6 +64,7 @@
 				</div>
 			</nav>
 		</header>
+		{# Fin NAVBAR #}
 
 		<main role="main">
 
@@ -124,7 +126,7 @@
 
 
 			<!-- Marketing messaging and featurettes
-																																																																																																																																							    ================================================== -->
+																																																																																																																																													    ================================================== -->
 			<!-- Wrap the rest of the page in another container to center all the content. -->
 
 			<div class="container marketing  {% if block('carousel') is not defined %}mt-5{% endif %}"> {% block content %}{% endblock %}
