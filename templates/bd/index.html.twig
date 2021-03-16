@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BD - BD Commerce
+{% endblock %}
+
+{% block content %}
+
+	{% for bd in bds %}
+		<pre>
+        {{ dump(bd) }}
+    </pre>
+		<img src="{{ asset('couv/') }}{{ bd.ref }}.jpg">
+	{% endfor %}
+
+{% endblock %}
