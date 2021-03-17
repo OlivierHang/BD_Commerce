@@ -11,3 +11,7 @@
     color: white;
     padding-top: 15px;
 }
+
+.bd-item .row {
+    justify-content: center;
+}

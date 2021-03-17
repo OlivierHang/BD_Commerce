@@ -32,7 +32,7 @@ class BdController extends AbstractController
         //     $bdArray[] = $bd;
         // }
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 12; $i++) {
             // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
             $bool = $this->filesystem->exists('../public/couv/' . $bds[$i]->getImage());
             // Si $bool == False, on change "image" par "defaut.jpg"
@@ -58,6 +58,7 @@ class BdController extends AbstractController
         // Va chercher une "BD" avec la "ref" passer en url
         $bd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref);
 
+        // Si y a pas de BD avec la "ref", redirection vers page "bds" (page avec toutes les bd)
         if (!$bd) {
             return $this->redirectToRoute('bds');
         }

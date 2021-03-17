@@ -1,13 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}BD - BD Commerce
+{% block title %}
+	{{bd.ref}}
+	- BD Commerce
 {% endblock %}
 
 {% block content %}
 
-	<img src="{{ asset('couv/') }}{{ bd.image }}">
-	<pre>
-        {{ dump(bd) }}
-    </pre>
+	<div class="row">
+		<div class="col-md-5">
+			<img src="{{asset('/couv/')}}{{bd.image}}" alt="{{bd.titre}}" class="img-fluid">
+		</div>
+		<div class="col-md-7">
+			<h3>{{bd.titre}}</h3>
+			<p>Prix :
+				{{bd.prixPublic}}</p>
+			<p>Auteur :
+				{{bd.auteur}}</p>
+			<p>Genre :
+				{{bd.genre}}</p>
+			<p>Edition :
+				{{bd.editeur}}</p>
+			<hr>
+			<p>Resumé :
+			</p>
+			<p>{{bd.resume}}</p>
+		</div>
+	</div>
 
 {% endblock %}

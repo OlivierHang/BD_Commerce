@@ -4,14 +4,26 @@
 {% endblock %}
 
 {% block content %}
+	<div class="row">
+		{% for bd in bds %}
 
-	{% for bd in bds %}
-		<a href="{{ path('bd', { 'ref' : bd.ref }) }}">
-			<img src="{{ asset('couv/') }}{{ bd.image }}">
-		</a>
-		<pre>
-        {{ dump(bd) }}
-    </pre>
-	{% endfor %}
+			<div class="col-md-4 my-4">
+				<div class="bd-item text-center">
+					<div class="row">
+						<p>
+							<a href="{{ path('bd', { 'ref' : bd.ref }) }}">
+								<img src="{{ asset('couv/') }}{{ bd.image }}" alt="image de la bd {{bd.titre}}">
+							</a>
+						</p>
+					</div>
+
+					<h5>{{bd.titre}}</h5>
+					<p>{{bd.heros}}</p>
+					<p>{{bd.prixPublic}}€</p>
+				</div>
+			</div>
+
+		{% endfor %}
+	</div>
 
 {% endblock %}
