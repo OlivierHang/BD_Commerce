@@ -5,13 +5,9 @@
 
 {% block content %}
 
-	{% for bd in bds %}
-		<a href="{{ path('bd', { 'ref' : bd.ref }) }}">
-			<img src="{{ asset('couv/') }}{{ bd.image }}">
-		</a>
-		<pre>
+	<img src="{{ asset('couv/') }}{{ bd.image }}">
+	<pre>
         {{ dump(bd) }}
     </pre>
-	{% endfor %}
 
 {% endblock %}

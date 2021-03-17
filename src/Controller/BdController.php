@@ -21,7 +21,7 @@ class BdController extends AbstractController
     }
 
     /**
-     * @Route("/bd", name="bd")
+     * @Route("/bd", name="bds")
      */
     public function index(): Response
     {
@@ -47,6 +47,33 @@ class BdController extends AbstractController
         return $this->render('bd/index.html.twig', [
             // 'bds' => $bds,
             'bds' => $bdArray,
+        ]);
+    }
+
+    /**
+     * @Route("/bd/{ref}", name="bd")
+     */
+    public function show($ref): Response
+    {
+        // Va chercher une "BD" avec la "ref" passer en url
+        $bd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref);
+
+        if (!$bd) {
+            return $this->redirectToRoute('bds');
+        }
+
+        // dd($bd);
+
+        // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
+        $bool = $this->filesystem->exists('../public/couv/' . $bd->getImage());
+        // Si $bool == False, on change "image" par "defaut.jpg"
+        if ($bool == false) {
+            $bd->setImage("defaut.jpg");
+        }
+
+
+        return $this->render('bd/bd_detail.html.twig', [
+            'bd' => $bd,
         ]);
     }
 }
