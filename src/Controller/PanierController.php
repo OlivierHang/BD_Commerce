@@ -3,12 +3,22 @@
 namespace App\Controller;
 
 use App\Classe\Panier;
+use App\Entity\Bd;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PanierController extends AbstractController
 {
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+
     /**
      * @Route("/panier", name="panier")
      */
@@ -16,9 +26,22 @@ class PanierController extends AbstractController
     {
         // dd($panier->get());
 
-        return $this->render('panier/index.html.twig', [
-            'panier' => $panier->get()
-        ]);
+        $panierComplet = [];
+
+        if (!empty($panier->get())) {
+            foreach ($panier->get() as $id => $quantite) {
+                $panierComplet[] = [
+                    'bd' => $this->entityManager->getRepository(Bd::class)->findOneByRef($id),
+                    'quantite' => $quantite,
+                ];
+            }
+
+            return $this->render('panier/index.html.twig', [
+                'panier' => $panierComplet,
+            ]);
+        }
+
+        return $this->render('panier/index.html.twig', []);
     }
 
     /**
