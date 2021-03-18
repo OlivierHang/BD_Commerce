@@ -18,18 +18,27 @@
 					<th scope="col">Quantite</th>
 					<th scope="col">Prix (unite)</th>
 					<th scope="col">Total</th>
+					<th scope="col"></th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for item in panier %}
 					<tr>
-						<th>
+						<td>
 							{{ item.bd.ref }}
-						</th>
+						</td>
 						<td>{{ item.bd.titre }}</td>
-						<td>{{ item.quantite }}</td>
+						<td>
+							<span height="200px">{{ item.quantite }}
+							</span>
+							<a href="{{ path('add_to_panier', {'ref' : item.bd.ref}) }}"><img src="{{ asset('assets/img/plus.png') }}" height="10px"></a>
+							<a href="{{ path('decrease_from_panier', {'ref' : item.bd.ref}) }}"><img src="{{ asset('assets/img/minus.png') }}" height="10px"></a>
+						</td>
 						<td>{{ item.bd.prixPublic }}€</td>
 						<td>{{ item.bd.prixPublic * item.quantite }}€</td>
+						<td>
+							<a href="{{ path('delete_from_panier', { 'ref' : item.bd.ref }) }}"><img src="{{ asset('assets/img/del.png') }}" height="20px"></a>
+						</td>
 					</tr>
 				{% endfor %}
 			</tbody>

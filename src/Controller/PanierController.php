@@ -18,7 +18,6 @@ class PanierController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-
     /**
      * @Route("/panier", name="panier")
      */
@@ -52,7 +51,6 @@ class PanierController extends AbstractController
         $panier->add($ref);
 
         return $this->redirectToRoute('panier');
-        // return $this->render('panier/index.html.twig', []);
     }
 
     /**
@@ -63,6 +61,25 @@ class PanierController extends AbstractController
         $panier->remove();
 
         return $this->redirectToRoute('panier');
-        // return $this->render('panier/index.html.twig', []);
+    }
+
+    /**
+     * @Route("/panier/delete/{ref}", name="delete_from_panier")
+     */
+    public function delete(Panier $panier, $ref): Response
+    {
+        $panier->delete($ref);
+
+        return $this->redirectToRoute('panier');
+    }
+
+    /**
+     * @Route("/panier/decrease/{ref}", name="decrease_from_panier")
+     */
+    public function decrease(Panier $panier, $ref): Response
+    {
+        $panier->decrease($ref);
+
+        return $this->redirectToRoute('panier');
     }
 }
