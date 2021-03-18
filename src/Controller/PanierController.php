@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Classe\Panier;
 use App\Entity\Bd;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,10 +13,12 @@ use Symfony\Component\Routing\Annotation\Route;
 class PanierController extends AbstractController
 {
     private $entityManager;
+    private $filesystem;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, Filesystem $filesystem)
     {
         $this->entityManager = $entityManager;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -29,8 +32,17 @@ class PanierController extends AbstractController
 
         if (!empty($panier->get())) {
             foreach ($panier->get() as $id => $quantite) {
+
+                $bd = $this->entityManager->getRepository(Bd::class)->findOneByRef($id);
+                // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
+                $bool = $this->filesystem->exists('../public/couv/' . $bd->getImage());
+                // Si $bool == False, on change "image" par "defaut.jpg"
+                if ($bool == false) {
+                    $bd->setImage("defaut.jpg");
+                }
+
                 $panierComplet[] = [
-                    'bd' => $this->entityManager->getRepository(Bd::class)->findOneByRef($id),
+                    'bd' => $bd,
                     'quantite' => $quantite,
                 ];
             }

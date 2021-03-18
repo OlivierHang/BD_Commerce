@@ -6,31 +6,35 @@
 {% block content %}
 
 	{% if panier is defined %}
-		<pre>
-		    {{ dump(panier) }}
-		</pre>
+		{# <pre>
+				    {{ dump(panier) }}
+				</pre> #}
 
 		<table class="table">
 			<thead>
 				<tr>
 					<th scope="col">Ref</th>
+					<th scope="col">Couverture</th>
 					<th scope="col">Titre</th>
 					<th scope="col">Quantite</th>
 					<th scope="col">Prix (unite)</th>
-					<th scope="col">Total</th>
+					<th scope="col">Prix</th>
 					<th scope="col"></th>
 				</tr>
 			</thead>
 			<tbody>
+				{% set total = null %}
+				{% set quantite = null %}
+
 				{% for item in panier %}
 					<tr>
 						<td>
 							{{ item.bd.ref }}
 						</td>
+						<td><img src="{{ asset('couv/') }}{{ item.bd.image }}" height="100px"></td>
 						<td>{{ item.bd.titre }}</td>
 						<td>
-							<span height="200px">{{ item.quantite }}
-							</span>
+							{{ item.quantite }}
 							<a href="{{ path('add_to_panier', {'ref' : item.bd.ref}) }}"><img src="{{ asset('assets/img/plus.png') }}" height="10px"></a>
 							<a href="{{ path('decrease_from_panier', {'ref' : item.bd.ref}) }}"><img src="{{ asset('assets/img/minus.png') }}" height="10px"></a>
 						</td>
@@ -40,12 +44,23 @@
 							<a href="{{ path('delete_from_panier', { 'ref' : item.bd.ref }) }}"><img src="{{ asset('assets/img/del.png') }}" height="20px"></a>
 						</td>
 					</tr>
+
+					{% set total = total + (item.bd.prixPublic * item.quantite ) %}
+					{% set quantite = quantite + item.quantite %}
+
 				{% endfor %}
 			</tbody>
 		</table>
-		<p>
+		<hr>
+		<div class="text-right mb-5">
+			<p>
+				Sous-total ({{quantite}}
+				articles):
+				<b>{{total}}€</b>
+			</p>
+			<a href="" class="btn btn-success mb-1">Valider le panier</a><br>
 			<a href="{{ path('remove_panier') }}" class="btn btn-danger">Vider le panier</a>
-		</p>
+		</div>
 	{% else %}
 		<p class="text-center">
 			Vous n'avez pas de BD dans votre panier
