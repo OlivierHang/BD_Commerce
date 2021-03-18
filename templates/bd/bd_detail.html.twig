@@ -27,7 +27,7 @@
 			<p>{{bd.resume}}</p>
 			<hr>
 			<p>
-				<a href="" class="btn btn-primary">Ajouter au panier</a>
+				<a href="{{ path('add_to_panier', {'ref' : bd.ref}) }}" class="btn btn-primary">Ajouter au panier</a>
 			</p>
 		</div>
 	</div>

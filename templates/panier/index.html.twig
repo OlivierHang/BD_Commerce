@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panier - BD Commerce
+{% endblock %}
+
+{% block content %}
+	<pre>
+    {{ dump(panier) }}
+</pre>
+	<p>
+		<a href="{{ path('remove_panier') }}" class="btn btn-danger">Vider le panier</a>
+	</p>
+{% endblock %}
