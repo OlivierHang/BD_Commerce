@@ -60,6 +60,8 @@ class RegisterController extends AbstractController
             $this->entityManager->persist($user);
             // // Execute la persistance / Enregistre la data dans la bd
             $this->entityManager->flush();
+
+            return $this->redirectToRoute("compte");
         }
 
         return $this->render('register/index.html.twig', [
