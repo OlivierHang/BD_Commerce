@@ -18,7 +18,7 @@ class SearchType extends AbstractType
                 'label' => false,
                 'required' => false,
                 'attr' => [
-                    'placeholder' => "Titre de bd à chercher .."
+                    'placeholder' => "Titre .."
                 ]
             ])
             ->add('submit', SubmitType::class, [

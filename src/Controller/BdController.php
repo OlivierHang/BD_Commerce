@@ -8,6 +8,7 @@ use App\Form\SearchType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -25,29 +26,49 @@ class BdController extends AbstractController
     /**
      * @Route("/bd", name="bds")
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
         $bds = $this->entityManager->getRepository(Bd::class)->findAll();
         $bdArray = [];
+
+        // Creation du formulaire
+        $search = new Search();
+        $form = $this->createForm(SearchType::class, $search);
+
+        // Traitement du formulaire
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $bds = $this->entityManager->getRepository(Bd::class)->findWithSearchTitre($search->titre);
+        }
 
         // foreach ($bds as $bd) {
         //     $bdArray[] = $bd;
         // }
 
-        for ($i = 0; $i < 12; $i++) {
-            // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
-            $bool = $this->filesystem->exists('../public/couv/' . $bds[$i]->getImage());
-            // Si $bool == False, on change "image" par "defaut.jpg"
-            if ($bool == false) {
-                $bds[$i]->setImage("defaut.jpg");
+        // Si le nombre de bd est inférieur à 12 bd, il ne prendra que les 12 premières bd
+        // Sinon il prendra les bd dispo dans $bds
+        if (count($bds) >= 12) {
+            for ($i = 0; $i < 12; $i++) {
+                // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
+                $bool = $this->filesystem->exists('../public/couv/' . $bds[$i]->getImage());
+                // Si $bool == False, on change "image" par "defaut.jpg"
+                if ($bool == false) {
+                    $bds[$i]->setImage("defaut.jpg");
+                }
+                $bdArray[] = $bds[$i];
             }
-            $bdArray[] = $bds[$i];
+        } else {
+            for ($i = 0; $i < count($bds); $i++) {
+                // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
+                $bool = $this->filesystem->exists('../public/couv/' . $bds[$i]->getImage());
+                // Si $bool == False, on change "image" par "defaut.jpg"
+                if ($bool == false) {
+                    $bds[$i]->setImage("defaut.jpg");
+                }
+                $bdArray[] = $bds[$i];
+            }
         }
-
-        $search = new Search();
-        $form = $this->createForm(SearchType::class, $search);
-
-        // dd($bdArray);
 
         return $this->render('bd/index.html.twig', [
             // 'bds' => $bds,

@@ -19,6 +19,25 @@ class BdRepository extends ServiceEntityRepository
         parent::__construct($registry, Bd::class);
     }
 
+    /**
+     * Requête qui me permet de récuperer les bd par rapport à un titre ou bout de titre en recherche
+     * @return Bd[]
+     */
+    public function findWithSearchTitre(String $titreSearch)
+    {
+        $query = $this
+            ->createQueryBuilder('b')
+            ->select('b');
+
+        if (!empty($titreSearch)) {
+            $query = $query
+                ->andWhere('b.titre LIKE :titre')
+                ->setParameter('titre', "%{$titreSearch}%");
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Bd[] Returns an array of Bd objects
     //  */
