@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Classe\Search;
 use App\Entity\Bd;
+use App\Form\SearchType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Filesystem\Filesystem;
@@ -42,11 +44,15 @@ class BdController extends AbstractController
             $bdArray[] = $bds[$i];
         }
 
+        $search = new Search();
+        $form = $this->createForm(SearchType::class, $search);
+
         // dd($bdArray);
 
         return $this->render('bd/index.html.twig', [
             // 'bds' => $bds,
             'bds' => $bdArray,
+            'form' => $form->createView(),
         ]);
     }
 

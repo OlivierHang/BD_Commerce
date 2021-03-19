@@ -1,11 +1,11 @@
 <?php
 
-use App\Classe;
+namespace App\Classe;
 
 class Search
 {
     /**
      * @var string
      */
-    public $genre;
+    public $titre;
 }
