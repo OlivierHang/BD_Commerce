@@ -12,7 +12,7 @@ class PaiementController extends AbstractController
     /**
      * @Route("/paiement", name="paiement")
      */
-    public function index(Panier $panier): Response
+    public function index(): Response
     {
         // dd($this->getUser());
         return $this->render('paiement/index.html.twig', []);
