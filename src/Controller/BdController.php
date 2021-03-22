@@ -35,10 +35,11 @@ class BdController extends AbstractController
         $search = new Search();
         $form = $this->createForm(SearchType::class, $search);
 
-        // Traitement du formulaire
+        // Traitement du filtre
+        // Si un titre est recherché, les bd avec le titre correspondant sera affiché
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $search->titre != null) {
             $bds = $this->entityManager->getRepository(Bd::class)->findWithSearchTitre($search->titre);
         }
 
