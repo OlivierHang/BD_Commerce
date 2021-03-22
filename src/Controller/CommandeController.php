@@ -27,12 +27,27 @@ class CommandeController extends AbstractController
     public function index(): Response
     {
         $user = $this->getUser();
-        $commande = $this->entityManager->getRepository(Commande::class)->findByUser($user);
-        $comDetails = $this->entityManager->getRepository(CommandeDetails::class)->findByCommande($commande);
+        $commandes = $this->entityManager->getRepository(Commande::class)->findByUser($user);
 
-        dd($comDetails);
+        return $this->render('commande/index.html.twig', [
+            'commandes' => $commandes,
+        ]);
+    }
 
-        return $this->render('commande/index.html.twig', []);
+    /**
+     * @Route("/commande/{idCommande}", name="commande_detail")
+     */
+    public function show($idCommande): Response
+    {
+        $comDetails = $this->entityManager->getRepository(CommandeDetails::class)->findByCommande($idCommande);
+
+        if (empty($comDetails)) {
+            return $this->redirectToRoute('commande');
+        }
+
+        return $this->render('commande/detail.html.twig', [
+            'commandes' => $comDetails,
+        ]);
     }
 
     /**
