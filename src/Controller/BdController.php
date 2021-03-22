@@ -28,6 +28,7 @@ class BdController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        // $bds -> objet avec toutes les BD
         $bds = $this->entityManager->getRepository(Bd::class)->findAll();
         $bdArray = [];
 
@@ -49,6 +50,7 @@ class BdController extends AbstractController
 
         // Si le nombre de bd est inférieur à 12 bd, il ne prendra que les 12 premières bd
         // Sinon il prendra les bd dispo dans $bds
+        // (Pour le grid colonne de bootstrap)
         if (count($bds) >= 12) {
             for ($i = 0; $i < 12; $i++) {
                 // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
@@ -91,7 +93,6 @@ class BdController extends AbstractController
             return $this->redirectToRoute('bds');
         }
 
-        // dd($bd);
 
         // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
         $bool = $this->filesystem->exists('../public/couv/' . $bd->getImage());

@@ -21,14 +21,26 @@ class CommandeController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-
     /**
      * @Route("/commande", name="commande")
      */
-    public function index(Panier $panier): Response
+    public function index(): Response
     {
-        // dd($panier->get());
+        $user = $this->getUser();
+        $commande = $this->entityManager->getRepository(Commande::class)->findByUser($user);
+        $comDetails = $this->entityManager->getRepository(CommandeDetails::class)->findByCommande($commande);
 
+        dd($comDetails);
+
+        return $this->render('commande/index.html.twig', []);
+    }
+
+    /**
+     * @Route("/commande/ajout", name="add_commande")
+     */
+    public function add(Panier $panier): Response
+    {
+        // preparation de l'enregistrement de la commande en BDD
         $date = new DateTime();
         $totalCommande = null;
 
@@ -38,8 +50,8 @@ class CommandeController extends AbstractController
         $commande->setIsPaid(false);
 
         foreach ($panier->get() as $ref => $quantity) {
-            // dd($ref, $quantity);
 
+            // preparation de l'enregistrement de la commandeDetails en BDD
             $prixBd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref)->getPrixPublic();
 
             $comDetails = new CommandeDetails();
@@ -49,6 +61,7 @@ class CommandeController extends AbstractController
             $comDetails->setPrix($prixBd);
             $comDetails->setTotal($prixBd * $quantity);
 
+            // commandeDetails persisté
             $this->entityManager->persist($comDetails);
 
             $totalCommande = $totalCommande + $comDetails->getTotal();
@@ -56,9 +69,22 @@ class CommandeController extends AbstractController
 
         $commande->setTotal($totalCommande);
 
+        // commande persisté
         $this->entityManager->persist($commande);
+        // Ajout dans la bdd
         $this->entityManager->flush();
 
+        // Clear le panier après avoir mis la commande en BDD
+        $panier->remove();
+
+        return $this->redirectToRoute('commande');
+    }
+
+    /**
+     * @Route("/commande/paiement", name="pay_commande")
+     */
+    public function paiement(): Response
+    {
         return $this->render('commande/index.html.twig', []);
     }
 }
