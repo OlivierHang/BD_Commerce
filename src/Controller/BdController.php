@@ -28,6 +28,7 @@ class BdController extends AbstractController
      */
     public function index(Request $request): Response
     {
+        // $bds -> objet avec toutes les BD
         $bds = $this->entityManager->getRepository(Bd::class)->findAll();
         $bdArray = [];
 
@@ -35,19 +36,17 @@ class BdController extends AbstractController
         $search = new Search();
         $form = $this->createForm(SearchType::class, $search);
 
-        // Traitement du formulaire
+        // Traitement du filtre
+        // Si un titre est recherché, les bd avec le titre correspondant sera affiché
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $search->titre != null) {
             $bds = $this->entityManager->getRepository(Bd::class)->findWithSearchTitre($search->titre);
         }
 
-        // foreach ($bds as $bd) {
-        //     $bdArray[] = $bd;
-        // }
-
         // Si le nombre de bd est inférieur à 12 bd, il ne prendra que les 12 premières bd
         // Sinon il prendra les bd dispo dans $bds
+        // (Pour le grid colonne de bootstrap)
         if (count($bds) >= 12) {
             for ($i = 0; $i < 12; $i++) {
                 // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
@@ -90,7 +89,6 @@ class BdController extends AbstractController
             return $this->redirectToRoute('bds');
         }
 
-        // dd($bd);
 
         // retourne True si le fichier/la couverture de bd (.jpg) existe dans le dossier "../public/couv"
         $bool = $this->filesystem->exists('../public/couv/' . $bd->getImage());

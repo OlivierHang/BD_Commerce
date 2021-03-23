@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Detail Commande - BD Commerce
+{% endblock %}
+
+{% block content %}
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">Ref</th>
+				<th scope="col">Quantité</th>
+				<th scope="col">Prix</th>
+				<th scope="col">Total</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for com in commandes %}
+				<tr>
+					<td>{{ com.bd }}</td>
+					<td>{{ com.quantity }}</td>
+					<td>{{ com.prix }}€</td>
+					<td>{{ com.total }}€</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('commande') }}" class="btn btn-secondary btn-block">Retour aux commandes</a>
+
+{% endblock %}

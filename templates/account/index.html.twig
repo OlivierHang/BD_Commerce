@@ -4,9 +4,11 @@
 {% endblock %}
 
 {% block content %}
-
-	<pre>
-    {{ dump(app.user) }}
-</pre>
+	<div class="text-center">
+		<h3>Votre compte</h3>
+		<hr>
+		<a href="{{ path('panier') }}">Mon panier</a><br>
+		<a href="{{ path('commande') }}">Mes commandes</a>
+	</div>
 
 {% endblock %}
