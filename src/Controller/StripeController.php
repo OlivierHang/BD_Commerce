@@ -4,9 +4,6 @@ namespace App\Controller;
 
 use App\Classe\Panier;
 use App\Entity\Bd;
-use App\Entity\Commande;
-use App\Entity\CommandeDetails;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
@@ -25,99 +22,11 @@ class StripeController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    private function ajout_commande_bdd(Panier $panier)
-    {
-
-        // dd($panier);
-        // Si il y a un panier, il le sauvegarde en BDD
-        if (!empty($panier->get())) {
-
-            // preparation de l'enregistrement de la commande en BDD
-            $date = new DateTime();
-            $totalCommande = null;
-
-            $commande = new Commande();
-            $commande->setUser($this->getUser());
-            $commande->setCreateAt($date);
-            $commande->setIsPaid(false);
-
-
-            foreach ($panier->get() as $ref => $quantity) {
-                // preparation de l'enregistrement de la commandeDetails en BDD
-                $prixBd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref)->getPrixPublic();
-
-                $comDetails = new CommandeDetails();
-                $comDetails->setCommande($commande);
-                $comDetails->setBd($ref);
-                $comDetails->setQuantity($quantity);
-                $comDetails->setPrix($prixBd);
-                $comDetails->setTotal($prixBd * $quantity);
-
-                // commandeDetails persisté
-                $this->entityManager->persist($comDetails);
-
-                $totalCommande = $totalCommande + $comDetails->getTotal();
-            }
-
-            $commande->setTotal($totalCommande);
-
-            // commande persisté
-            $this->entityManager->persist($commande);
-            // Ajout dans la bdd
-            $this->entityManager->flush();
-
-            // Clear le panier après avoir mis la commande en BDD
-            $panier->remove();
-        } else {
-            return $this->redirectToRoute('panier');
-        }
-    }
-
     /**
      * @Route("/commande/create-session", name="stripe_create_session")
      */
     public function index(Panier $panier): Response
     {
-
-        // // $this->ajout_commande_bdd($panier);
-        // // preparation de l'enregistrement de la commande en BDD
-        // $date = new DateTime();
-        // $totalCommande = null;
-
-        // $commande = new Commande();
-        // $commande->setUser($this->getUser());
-        // $commande->setCreateAt($date);
-        // $commande->setIsPaid(false);
-
-
-        // foreach ($panier->get() as $ref => $quantity) {
-        //     // preparation de l'enregistrement de la commandeDetails en BDD
-        //     $prixBd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref)->getPrixPublic();
-
-        //     $comDetails = new CommandeDetails();
-        //     $comDetails->setCommande($commande);
-        //     $comDetails->setBd($ref);
-        //     $comDetails->setQuantity($quantity);
-        //     $comDetails->setPrix($prixBd);
-        //     $comDetails->setTotal($prixBd * $quantity);
-
-        //     // commandeDetails persisté
-        //     $this->entityManager->persist($comDetails);
-
-        //     $totalCommande = $totalCommande + $comDetails->getTotal();
-        // }
-
-        // $commande->setTotal($totalCommande);
-
-        // // commande persisté
-        // $this->entityManager->persist($commande);
-        // // Ajout dans la bdd
-        // $this->entityManager->flush();
-
-        // // Clear le panier après avoir mis la commande en BDD
-        // $panier->remove();
-
-
         $product_for_stripe = [];
         $YOUR_DOMAIN = 'http://127.0.0.1:8000';
 
@@ -140,6 +49,8 @@ class StripeController extends AbstractController
                 'quantity' => $quantity,
             ];
         }
+
+        $panier->remove();
 
         // dd($product_for_stripe);
 
