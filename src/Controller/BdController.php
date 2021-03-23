@@ -44,10 +44,6 @@ class BdController extends AbstractController
             $bds = $this->entityManager->getRepository(Bd::class)->findWithSearchTitre($search->titre);
         }
 
-        // foreach ($bds as $bd) {
-        //     $bdArray[] = $bd;
-        // }
-
         // Si le nombre de bd est inférieur à 12 bd, il ne prendra que les 12 premières bd
         // Sinon il prendra les bd dispo dans $bds
         // (Pour le grid colonne de bootstrap)
