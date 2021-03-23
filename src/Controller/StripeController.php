@@ -50,8 +50,6 @@ class StripeController extends AbstractController
             ];
         }
 
-        $panier->remove();
-
         // dd($product_for_stripe);
 
         Stripe::setApiKey('sk_test_51IY7XADH5SafTNx86tPOfyQMqrwA0WT2KQYr6zXVjWVhSqoxFKzLJb3ImT9NYvQ2EIorMFRRWR3MdmDIzY5Xqx9N008digkjYt');

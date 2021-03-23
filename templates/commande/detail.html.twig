@@ -30,11 +30,9 @@
 		</tbody>
 	</table>
 
-	{% if commande.isPaid == false %}
-		<a class="btn btn-success btn-block" id="checkout-button">Commander |
-			{{ commande.total }}
-			€</a>
-	{% endif %}
+	<a class="btn btn-success btn-block" id="checkout-button">Commander |
+		{{ commande.total }}
+		€</a>
 	<a href="{{ path('commande') }}" class="btn btn-secondary btn-block">Retour aux commandes</a>
 
 {% endblock %}

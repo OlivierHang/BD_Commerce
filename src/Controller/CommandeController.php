@@ -30,8 +30,22 @@ class CommandeController extends AbstractController
         $commandes = $this->entityManager->getRepository(Commande::class)->findByUser($user);
 
         if (!empty($commandes)) {
+            $comArray = [];
+            foreach ($commandes as $com) {
+                // dump($com);
+                // dd($commandes);
+                if ($com->getIsPaid() == true) {
+                    $comArray[] = $com;
+                }
+            }
+
+            // Si le user n'a pas de commande "payé", on ne lui affiche pas de commande
+            if (empty($comArray)) {
+                return $this->render('commande/index.html.twig', []);
+            }
+
             return $this->render('commande/index.html.twig', [
-                'commandes' => $commandes,
+                'commandes' => $comArray,
             ]);
         }
 
