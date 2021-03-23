@@ -24,49 +24,8 @@ class CommandeController extends AbstractController
     /**
      * @Route("/commande", name="commande")
      */
-    public function index(Panier $panier): Response
+    public function index(): Response
     {
-        // Si il y a un panier, il le sauvegarde en BDD
-        if (!empty($panier->get())) {
-
-            // preparation de l'enregistrement de la commande en BDD
-            $date = new DateTime();
-            $totalCommande = null;
-
-            $commande = new Commande();
-            $commande->setUser($this->getUser());
-            $commande->setCreateAt($date);
-            $commande->setIsPaid(false);
-
-            foreach ($panier->get() as $ref => $quantity) {
-
-                // preparation de l'enregistrement de la commandeDetails en BDD
-                $prixBd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref)->getPrixPublic();
-
-                $comDetails = new CommandeDetails();
-                $comDetails->setCommande($commande);
-                $comDetails->setBd($ref);
-                $comDetails->setQuantity($quantity);
-                $comDetails->setPrix($prixBd);
-                $comDetails->setTotal($prixBd * $quantity);
-
-                // commandeDetails persisté
-                $this->entityManager->persist($comDetails);
-
-                $totalCommande = $totalCommande + $comDetails->getTotal();
-            }
-
-            $commande->setTotal($totalCommande);
-
-            // commande persisté
-            $this->entityManager->persist($commande);
-            // Ajout dans la bdd
-            $this->entityManager->flush();
-
-            // Clear le panier après avoir mis la commande en BDD
-            $panier->remove();
-        }
-
         $user = $this->getUser();
         $commandes = $this->entityManager->getRepository(Commande::class)->findByUser($user);
 
@@ -76,7 +35,7 @@ class CommandeController extends AbstractController
     }
 
     /**
-     * @Route("/commande/{idCommande}", name="commande_detail")
+     * @Route("/commande/details/{idCommande}", name="commande_detail")
      */
     public function show($idCommande): Response
     {
