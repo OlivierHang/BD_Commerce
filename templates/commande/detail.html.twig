@@ -30,10 +30,14 @@
 		</tbody>
 	</table>
 
-	<a class="btn btn-success btn-block" id="checkout-button">Commander |
-		{{ commande.total }}
-		€</a>
-	<a href="{{ path('commande') }}" class="btn btn-secondary btn-block">Retour aux commandes</a>
+	{% if commande.isPaid == false %}
+		<a class="btn btn-success btn-block" id="checkout-button">Commander |
+			{{ commande.total }}
+			€</a>
+	{% endif %}
+	{% if commande.isPaid == true %}
+		<a href="{{ path('commande') }}" class="btn btn-secondary btn-block">Retour aux commandes</a>
+	{% endif %}
 
 {% endblock %}
 
@@ -48,7 +52,7 @@ var checkoutButton = document.getElementById("checkout-button");
 
 checkoutButton.addEventListener("click", function () {
 
-fetch("/commande/create-session", {method: "POST"}).then(function (response) {
+fetch("/commande/create-session/{{ commande.reference }}", {method: "POST"}).then(function (response) {
 
 return response.json();
 

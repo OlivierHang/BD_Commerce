@@ -60,6 +60,8 @@ class CommandeController extends AbstractController
         $commande = $this->entityManager->getRepository(Commande::class)->findOneByReference($reference);
         $comDetails = $this->entityManager->getRepository(CommandeDetails::class)->findByCommande($commande);
 
+        // dd($commande);
+
         return $this->render('commande/detail.html.twig', [
             'commande' => $commande,
             'details' => $comDetails,
@@ -71,7 +73,6 @@ class CommandeController extends AbstractController
      */
     public function add(Panier $panier): Response
     {
-        // dd($panier->get());
         // Si il y a un panier, il le sauvegarde en BDD
         if (!empty($panier->get())) {
 
@@ -110,6 +111,8 @@ class CommandeController extends AbstractController
             $this->entityManager->persist($commande);
             // Ajout dans la bdd
             $this->entityManager->flush();
+            // Enleve le panier
+            $panier->remove();
 
             return $this->redirectToRoute('commande_detail', ['reference' => $reference]);
         } else {

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Classe\Panier;
 use App\Entity\Bd;
+use App\Entity\Commande;
+use App\Entity\CommandeDetails;
 use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
@@ -23,38 +25,33 @@ class StripeController extends AbstractController
     }
 
     /**
-     * @Route("/commande/create-session", name="stripe_create_session")
+     * @Route("/commande/create-session/{reference}", name="stripe_create_session")
      */
-    public function index(Panier $panier): Response
+    public function index($reference): Response
     {
         $product_for_stripe = [];
         $YOUR_DOMAIN = 'http://127.0.0.1:8000';
 
-        // dd($panier->get());
+        $commande = $this->entityManager->getRepository(Commande::class)->findOneByReference($reference);
+        $comDetails = $this->entityManager->getRepository(CommandeDetails::class)->findByCommande($commande);
 
-        foreach ($panier->get() as $ref => $quantity) {
 
-            $prixBd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref)->getPrixPublic();
-            $titreBd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref)->getTitre();
+        foreach ($comDetails as $com) {
 
             $product_for_stripe[] = [
                 'price_data' => [
                     'currency' => 'eur',
-                    'unit_amount' => ($prixBd * 100),
+                    'unit_amount' => ($com->getPrix() * 100),
                     'product_data' => [
-                        'name' => $titreBd,
+                        'name' => $com->getBd(),
                         'images' => ["https://i.imgur.com/EHyR2nP.png"],
                     ],
                 ],
-                'quantity' => $quantity,
+                'quantity' => $com->getQuantity(),
             ];
         }
 
-        // dd($product_for_stripe);
-
         Stripe::setApiKey('sk_test_51IY7XADH5SafTNx86tPOfyQMqrwA0WT2KQYr6zXVjWVhSqoxFKzLJb3ImT9NYvQ2EIorMFRRWR3MdmDIzY5Xqx9N008digkjYt');
-
-        // header('Content-Type: application/json');
 
         $checkout_session = Session::create([
             'payment_method_types' => ['card'],
@@ -66,6 +63,8 @@ class StripeController extends AbstractController
             'cancel_url' => $YOUR_DOMAIN . '/commande/erreur/{CHECKOUT_SESSION_ID}',
         ]);
 
+        $commande->setStripeSessionId($checkout_session->id);
+        $this->entityManager->flush();
 
         $response = new JsonResponse(['id' => $checkout_session->id]);
         return $response;
