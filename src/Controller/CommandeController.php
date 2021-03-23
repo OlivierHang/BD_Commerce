@@ -28,7 +28,7 @@ class CommandeController extends AbstractController
     {
         // Si il y a un panier, il le sauvegarde en BDD
         if (!empty($panier->get())) {
-            // dd($panier);
+
             // preparation de l'enregistrement de la commande en BDD
             $date = new DateTime();
             $totalCommande = null;
