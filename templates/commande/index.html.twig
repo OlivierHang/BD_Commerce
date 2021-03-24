@@ -4,32 +4,34 @@
 {% endblock %}
 
 {% block content %}
-	<table class="table">
-		<thead>
-			<tr>
-				<th scope="col">ID Commande</th>
-				<th scope="col">Date de commande</th>
-				<th scope="col">Total</th>
-				<th scope="col"></th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for com in commandes %}
+	{% if commandes is defined %}
+		<table class="table">
+			<thead>
 				<tr>
-					<td>{{ com.id }}</td>
-					<td>{{ com.createAt|date('d/m/Y') }}</td>
-					<td>{{ com.total }}€</td>
-					<td>
-						<a href="{{ path('commande_detail', {'idCommande' : com.id}) }}" class="btn btn-info btn-md">Detail</a>
-						{% if com.isPaid == false %}
-							|
-							<a href="" class="btn btn-primary">Payer</a>
-						{% endif %}
-					</td>
-					<td></td>
+					<th scope="col">ID Commande</th>
+					<th scope="col">Date de commande</th>
+					<th scope="col">Total</th>
+					<th scope="col"></th>
 				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				{% for com in commandes %}
+					<tr>
+						<td>{{ com.id }}</td>
+						<td>{{ com.createAt|date('d/m/Y') }}</td>
+						<td>{{ com.total }}€</td>
+						<td>
+							<a href="{{ path('commande_detail', {'reference' : com.reference}) }}" class="btn btn-info">Details</a>
+						</td>
+						<td></td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p class="text-center">
+			Vous n'avez pas de Commandes
+		</p>
+	{% endif %}
 
 {% endblock %}

@@ -24,22 +24,71 @@ class CommandeController extends AbstractController
     /**
      * @Route("/commande", name="commande")
      */
-    public function index(Panier $panier): Response
+    public function index(): Response
+    {
+        $user = $this->getUser();
+        $commandes = $this->entityManager->getRepository(Commande::class)->findByUser($user);
+
+        if (!empty($commandes)) {
+            $comArray = [];
+            foreach ($commandes as $com) {
+                // dump($com);
+                // dd($commandes);
+                if ($com->getIsPaid() == true) {
+                    $comArray[] = $com;
+                }
+            }
+
+            // Si le user n'a pas de commande "payé", on ne lui affiche pas de commande
+            if (empty($comArray)) {
+                return $this->render('commande/index.html.twig', []);
+            }
+
+            return $this->render('commande/index.html.twig', [
+                'commandes' => $comArray,
+            ]);
+        }
+
+        return $this->render('commande/index.html.twig', []);
+    }
+
+    /**
+     * @Route("/commande/detail/{reference}", name="commande_detail")
+     */
+    public function show($reference): Response
+    {
+        $commande = $this->entityManager->getRepository(Commande::class)->findOneByReference($reference);
+        $comDetails = $this->entityManager->getRepository(CommandeDetails::class)->findByCommande($commande);
+
+        // dd($commande);
+
+        return $this->render('commande/detail.html.twig', [
+            'commande' => $commande,
+            'details' => $comDetails,
+        ]);
+    }
+
+    /**
+     * @Route("/commande/ajout", name="commande_add")
+     */
+    public function add(Panier $panier): Response
     {
         // Si il y a un panier, il le sauvegarde en BDD
-        if (!empty($panier)) {
-            // dd($panier);
+        if (!empty($panier->get())) {
+
             // preparation de l'enregistrement de la commande en BDD
             $date = new DateTime();
+            $reference = $date->format('dmY') . '-' . uniqid();
             $totalCommande = null;
 
             $commande = new Commande();
             $commande->setUser($this->getUser());
+            $commande->setReference($reference);
             $commande->setCreateAt($date);
             $commande->setIsPaid(false);
 
-            foreach ($panier->get() as $ref => $quantity) {
 
+            foreach ($panier->get() as $ref => $quantity) {
                 // preparation de l'enregistrement de la commandeDetails en BDD
                 $prixBd = $this->entityManager->getRepository(Bd::class)->findOneByRef($ref)->getPrixPublic();
 
@@ -62,40 +111,12 @@ class CommandeController extends AbstractController
             $this->entityManager->persist($commande);
             // Ajout dans la bdd
             $this->entityManager->flush();
-
-            // Clear le panier après avoir mis la commande en BDD
+            // Enleve le panier
             $panier->remove();
+
+            return $this->redirectToRoute('commande_detail', ['reference' => $reference]);
+        } else {
+            return $this->redirectToRoute('panier');
         }
-
-        $user = $this->getUser();
-        $commandes = $this->entityManager->getRepository(Commande::class)->findByUser($user);
-
-        return $this->render('commande/index.html.twig', [
-            'commandes' => $commandes,
-        ]);
-    }
-
-    /**
-     * @Route("/commande/{idCommande}", name="commande_detail")
-     */
-    public function show($idCommande): Response
-    {
-        $comDetails = $this->entityManager->getRepository(CommandeDetails::class)->findByCommande($idCommande);
-
-        if (empty($comDetails)) {
-            return $this->redirectToRoute('commande');
-        }
-
-        return $this->render('commande/detail.html.twig', [
-            'commandes' => $comDetails,
-        ]);
-    }
-
-    /**
-     * @Route("/commande/paiement", name="pay_commande")
-     */
-    public function paiement(): Response
-    {
-        return $this->render('commande/index.html.twig', []);
     }
 }
