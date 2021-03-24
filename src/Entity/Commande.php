@@ -124,6 +124,13 @@ class Commande
         return $this->total;
     }
 
+    // Pour avoir le prix Total dans le backoffice
+    public function getTotalDashboard(): float
+    {
+        $total = $this->total * 100;
+        return $total;
+    }
+
     public function setTotal(float $total): self
     {
         $this->total = $total;

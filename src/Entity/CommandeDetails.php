@@ -89,11 +89,25 @@ class CommandeDetails
         return $this->prix;
     }
 
+    // Pour avoir le prix par unité dans le backoffice
+    public function getPrixDashboard(): ?float
+    {
+        $prix = $this->prix * 100;
+        return $prix;
+    }
+
     public function setPrix(float $prix): self
     {
         $this->prix = $prix;
 
         return $this;
+    }
+
+    // Pour avoir le prix Total dans le backoffice
+    public function getTotalDashboard(): ?float
+    {
+        $total = $this->total * 100;
+        return $total;
     }
 
     public function getTotal(): ?float
